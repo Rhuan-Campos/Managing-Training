@@ -17,7 +17,6 @@ class Exercicio:
 # Variáveis globais:
 cadAlunos = []  # lista de alunos
 treinoAlunos = []  # matriz de treinos
-
 def recebeCadastro():
     nome = input("Insira o nome do novo aluno: ")
     cpf = input("Insira o cpf de " + nome + ": ")
@@ -26,7 +25,7 @@ def recebeCadastro():
     altura = int(input(f"Insira a altura de {nome}: "))
     print()
     cadastroAluno(nome, cpf, peso, altura)
-    print(cadAlunos[0].nome, cadAlunos[0].cpf, cadAlunos[0].peso, cadAlunos[0].altura)
+    # print(cadAlunos[0].nome, cadAlunos[0].cpf, cadAlunos[0].peso, cadAlunos[0].altura)
     # else:
             # print("CPF inválido, tente novamente.")
 
@@ -42,26 +41,36 @@ def cadastroAluno(nome, cpf, peso, altura):
     treinoAlunos.append([])  # insere um treino vazio
 
 
-def recebeExercicio(aluno):
-    nome = input("Insira o nome do exercício: ")
-    rep = input(f"Insira a quantidade de repetições de {nome}: ")
-    peso = input(f"Insira o peso a ser utilizado em {nome}: ")
-    idAluno = cadAlunos.index(aluno)
-    insereExercicio(idAluno, nome, rep, peso)
+def recebeExercicio(aluno1):
+    nomeExer = input("Insira o nome do exercício: ")
+    rep = input(f"Insira a quantidade de repetições de {nomeExer}: ")
+    peso = input(f"Insira o peso a ser utilizado em {nomeExer}: ")
+    print(aluno1)
+    
+    for i in range(len(cadAlunos)):
+        # print(cadAlunos[i].nomeExer)
+        if aluno1 in cadAlunos[i].nome :
+            idAluno= i
+    # print(idAluno)
+    insereExercicio(idAluno, nomeExer, rep, peso)
+    
+
 # Inserir um Exercício
 def insereExercicio(idAluno, nome, rep, peso):
     exer = Exercicio()
     exer.nomeExercicio = nome
     exer.numRepeticoes = rep
     exer.pesoExercicio = peso
-    for i in treinoAlunos:
-        for j in range(treinoAlunos.length):
-            if i == treinoAlunos[j].exer.nome:
-                return print("Esse exercício já existe")
-            else:
-                return print("Exercício adicionado")
-    treinoAlunos[idAluno].append(exer)  # novo exercício no treino do respectivo aluno
-
+    # for i in treinoAlunos:
+    #     for j in range(treinoAlunos.length):
+    #         if i == treinoAlunos[j].exer.nome:
+    #             return print("Esse exercício já existe")
+    #         else:
+    #             return print("Exercício adicionado")
+    treinoAlunos[idAluno].append(exer)
+    # print(treinoAlunos) 
+    for i in range(len(treinoAlunos[idAluno])):
+        print(treinoAlunos[idAluno][i].nomeExercicio) # novo exercício no treino do respectivo aluno
 
 # Menu principal
 def menuPrincipal():
@@ -93,12 +102,12 @@ def menuPrincipal():
 
 # Menu Gerenciar Treino
 def menuGerenciar():
-    aluno = input("Insira o nome do aluno que deseja gerenciar o treino: ")
+    aluno1 = input("Insira o nome do aluno que deseja gerenciar o treino: ")
     menuGerenciar = int(input(
-        f"Qual operação deseja realizar? \n1. Incluir um novo exercício no treino de {aluno}. \n2. Alterar um exercício existente no treino de {aluno}. \n3. Excluir um exercício do treino de {aluno}. \n4. Excluir todos os exercícios do treino de {aluno}. \n"
-    ))
+        f"Qual operação deseja realizar? \n1. Incluir um novo exercício no treino de {aluno1}. \n2. Alterar um exercício existente no treino de {aluno1}. \n3. Excluir um exercício do treino de {aluno1}. \n4. Excluir todos os exercícios do treino de {aluno1}. \n")
+    )
     if menuGerenciar == 1:
-        recebeExercicio(aluno)
+        recebeExercicio(aluno1)
 
     # elif menuGerenciar == 2:
 
