@@ -94,9 +94,9 @@ def menuPrincipal():
 # Menu Gerenciar Treino
 def menuGerenciar():
     aluno = input("Insira o nome do aluno que deseja gerenciar o treino: ")
-    menuGerenciar = input(
+    menuGerenciar = int(input(
         f"Qual operação deseja realizar? \n1. Incluir um novo exercício no treino de {aluno}. \n2. Alterar um exercício existente no treino de {aluno}. \n3. Excluir um exercício do treino de {aluno}. \n4. Excluir todos os exercícios do treino de {aluno}. \n"
-    )
+    ))
     if menuGerenciar == 1:
         recebeExercicio(aluno)
 
