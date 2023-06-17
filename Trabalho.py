@@ -49,6 +49,7 @@ def recebeExercicio(aluno):
     idAluno = cadAlunos.index(aluno)
     insereExercicio(idAluno, nome, rep, peso)
 # Inserir um Exercício
+
 def insereExercicio(idAluno, nome, rep, peso):
     exer = Exercicio()
     exer.nomeExercicio = nome
@@ -227,12 +228,27 @@ def consultarAluno(idAluno):
 
 
 def atualizarDados(idAluno):
-    # edit_by_name = input("Input the name of the pupil you want to edit data: ")
-    print("if you enter 0 will stay the same): ")
-    cadAlunos[idAluno].nome = input(f'The actual Name is: {cadAlunos[idAluno].nome}. What do you want to put?')
-    cadAlunos[idAluno].cpf = input(f'The actual CPF is: {cadAlunos[idAluno].cpf}. What do you want to put?')
-    cadAlunos[idAluno].peso = input(f'The actual Weight is: {cadAlunos[idAluno].peso}. What do you want to put?')
-    cadAlunos[idAluno].altura = input(f'The actual Height is: {cadAlunos[idAluno].altura}. What do you want to put?')
+
+    print("if you enter 0 will stay the same: ")
+
+    new_name = input(f'The actual Name is: {cadAlunos[idAluno].nome}. What do you want to put?')
+    new_cpf = input(f'The actual CPF is: {cadAlunos[idAluno].cpf}. What do you want to put?')
+    new_weight = input(f'The actual Weight is: {cadAlunos[idAluno].peso}. What do you want to put?')
+    new_height = input(f'The actual Height is: {cadAlunos[idAluno].altura}. What do you want to put?')
+
+    if new_name != '0':
+        cadAlunos[idAluno].nome = new_name
+    
+    if new_cpf != '0':
+        cadAlunos[idAluno].cpf = new_cpf
+
+    if new_weight != '0':
+        cadAlunos[idAluno].peso = new_weight
+
+    if new_height != '0':
+        cadAlunos[idAluno].altura = new_height
+        
+
             
 
 def excluirAluno():
@@ -242,7 +258,7 @@ def excluirAluno():
             cadAlunos[i].clear()
 
 def relatorioAlunos():
-    ## Atribuir status de "Ativo", "Passivo", "Inativo"
+    
     report_view = input("Choose what you want to view: \n 1 - All Pupils \n 2 - Just Active Pupils\n 3 - All Pupils")
     match report_view:
         case "1":
@@ -250,9 +266,15 @@ def relatorioAlunos():
                 print("Pupil Data: ")
                 print(f"Nome: {cadAlunos[i].nome}\nCPF: {cadAlunos[i].cpf}\nPeso: {cadAlunos[i].peso}\nAltura:{cadAlunos[i].Altura}\n")
         case "2":
-            print('a')
+            for i in range(len(cadAlunos)): 
+                if cadAlunos[i].status == True:
+                    print("Active Pupil Data: ")
+                    print(f"Nome: {cadAlunos[i].nome}\nCPF: {cadAlunos[i].cpf}\nPeso: {cadAlunos[i].peso}\nAltura:{cadAlunos[i].Altura}\n")
         case "3":
-            print('a')
+            if cadAlunos[i].status == True:
+                print("Inative Pupil Data: ")
+                print(f"Nome: {cadAlunos[i].nome}\nCPF: {cadAlunos[i].cpf}\nPeso: {cadAlunos[i].peso}\nAltura:{cadAlunos[i].Altura}\n")
+
 
 
 
