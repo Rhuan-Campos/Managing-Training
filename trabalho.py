@@ -389,5 +389,5 @@ while True:
             break
 
     except EOFError:
-        print("Por favor Andressa, insira alguma coisa.")
+        print("Por favor, insira alguma coisa.")
         break
