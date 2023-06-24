@@ -4,6 +4,8 @@ class Aluno:
     cpf = None
     peso = 0
     altura = 0
+    email = None
+    imc = None
     status = False
 
 # Classe dos Exercícios
@@ -20,33 +22,48 @@ treinoAlunos = []  # matriz de treinos
 def recebeCadastro():
     verificacao = 0
     nome = input("Insira o nome do novo aluno: ")
-    for i in cadAlunos:
-        if nome == i.nome:
-            verificacao += 1
-    if verificacao == 0:
-        cpf = input("Insira o cpf de " + nome + ": ")
-        if validateCPF(cpf) == True:
-            peso = float(input(f"Insira, em quilogramas, o peso de {nome}: "))
-            altura = int(input(f"Insira a altura de {nome}: "))
-            cadastroAluno(nome, cpf, peso, altura)
-            print()
-            print(
-                f"Nome: {cadAlunos[0].nome} \nCPF: {cadAlunos[0].cpf} \nPeso: {cadAlunos[0].peso} kg \nAltura: {cadAlunos[0].altura} cm"
-            )
-            print(f"Aluno adicionado com sucesso!")
-        else:
-            print("CPF inválido, tente novamente.")
+    if nome != "":
+      for i in cadAlunos:
+          if nome == i.nome:
+              verificacao += 1
+      if verificacao == 0:
+          cpf = input(f"Insira o cpf de {nome}: ")
+          if validateCPF(cpf) == True:
+              email = input(f"Insira o email de {nome}: ")
+              if validateEmail(email) == True:
+                  peso = float(input(f"Insira o peso de {nome} em quilogramas: "))
+                  altura = int(input(f"Insira a altura de {nome} em centímetros: "))
+                  imc = calculatingIMC(peso, altura)
+                  cadastroAluno(nome, cpf, peso, altura, email, imc)
+                  print()
+                  print(f"Aluno adicionado com sucesso!")
+                  print()
+                  print(
+                      f"Nome: {cadAlunos[0].nome} \nCPF: {cadAlunos[0].cpf} \nPeso: {cadAlunos[0].peso} kg \nAltura: {cadAlunos[0].altura} cm\nEmail: {cadAlunos[0].email} \nIMC: {cadAlunos[0].imc:.2f}"
+                  )
+                  
+              else:
+                  print()
+                  print("Email inválido, tente novamente.")
+          else:
+              print()
+              print("CPF inválido, tente novamente.")
+      else:
+          print()
+          print(f"O aluno {nome} já existe!")
     else:
         print()
-        print(f"O aluno {nome} já existe!")
+        print("Por favor, insira um nome adequado!")
 
 # Cadastra o aluno.
-def cadastroAluno(nome, cpf, peso, altura):
+def cadastroAluno(nome, cpf, peso, altura, email, imc):
     novo = Aluno()
     novo.nome = nome
     novo.cpf = cpf
     novo.peso = peso
     novo.altura = altura
+    novo.email = email
+    novo.imc = imc
     novo.status = False
     cadAlunos.append(novo)  # cadastra aluno
     treinoAlunos.append([])  # insere um vetor de treinos vazio
@@ -59,7 +76,7 @@ def descobreIdAluno(nome):
             return i
 
 # Recebe os dados do exercício a ser inserido.
-def recebeExercicio(idAluno):
+def recebeExercicio(idAluno, nomeAluno):
     verificando = 0
     nomeExer = input("Insira o nome do exercício: ")
     for i in treinoAlunos:
@@ -69,24 +86,26 @@ def recebeExercicio(idAluno):
     if verificando == 0:
         rep = int(input(f"Insira a quantidade de repetições de {nomeExer}: "))
         peso = int(input(f"Insira o peso a ser utilizado em {nomeExer}: "))
-        insereExercicio(idAluno, nomeExer, rep, peso)
+        print()
+        insereExercicio(idAluno, nomeExer, rep, peso, nomeAluno)
     else:
         print("Esse exercício já existe!")
 
 # Insere o exercício.
-def insereExercicio(idAluno, nome, rep, peso):
+def insereExercicio(idAluno, nome, rep, peso, nomeAluno):
     exer = Exercicio()
     exer.nomeExercicio = nome
     exer.numRepeticoes = rep
     exer.pesoExercicio = peso
     cadAlunos[idAluno].status = True
     treinoAlunos[idAluno].append(exer)
-    # print(treinoAlunos)
+    print("Exercício adicionado!")
+    print()
+    print(f"Treino de {nomeAluno}:")
     for i in range(len(treinoAlunos[idAluno])):
         print(
-            f"Exercício: {treinoAlunos[idAluno][i].nomeExercicio} \nNúmero de repetições: {treinoAlunos[idAluno][i].numRepeticoes} \nPeso a ser utilizado: {treinoAlunos[idAluno][i].pesoExercicio}"
-        )  # novo exercício no treino do respectivo aluno
-    print("Exercício adicionado!")
+            f"\n Exercício: {treinoAlunos[idAluno][i].nomeExercicio} \n Número de repetições: {treinoAlunos[idAluno][i].numRepeticoes} \n Peso a ser utilizado: {treinoAlunos[idAluno][i].pesoExercicio}"
+        )
 
 # Altera um exercício existente.
 def alteraExercicio(idAluno, nomeExercicio):
@@ -109,8 +128,10 @@ def alteraExercicio(idAluno, nomeExercicio):
                     j.pesoExercicio = int(
                         input(f"Insira o peso a ser utilizado em {j.nomeExercicio}: ")
                     )
+                    print()
                     print("Exercício alterado!")
     else:
+        print()
         print("Exercício não encontrado!")
 
 # Exclui um exercício existente.
@@ -142,47 +163,72 @@ def excluirTodosExercicios(idAluno):
 def consultarAluno():
     search_by_name = input("Input the name of the pupil you want to view the data: ")
     idAluno = descobreIdAluno(search_by_name)
-    for i in range(len(cadAlunos)):
-        if search_by_name in cadAlunos[i].nome:
-            if treinoAlunos[i] != []:
-                print()
-                print("Pupil Data: ")
-                print(f" Nome: {cadAlunos[i].nome}\n CPF: {cadAlunos[i].cpf}\n Peso: {cadAlunos[i].peso} kg\n Altura: {cadAlunos[i].altura} cm")
-                print(" Status:", "Ativo" if cadAlunos[i].status == True else "Inativo")
-                print()
-                print(f"Treino de {cadAlunos[i].nome}: ")
-                for j in treinoAlunos[idAluno]:
-                    print(
-                        f" Nome do Exercício: {j.nomeExercicio}\n Número de Repetições: {j.numRepeticoes}\n Peso do Exercício: {j.pesoExercicio} kg")
-            else:
-                print(f"The Pupil {search_by_name} does't have a registred workout")
-        else:
-            print(f"The Pupil {search_by_name} is not registred ")
+    if cadAlunos != []:
+      for i in range(len(cadAlunos)):
+          if search_by_name in cadAlunos[i].nome:
+              if treinoAlunos[i] != []:
+                  print()
+                  print("Pupil Data: ")
+                  print(f" Nome: {cadAlunos[0].nome} \n CPF: {cadAlunos[0].cpf} \n Peso: {cadAlunos[0].peso} kg \n Altura: {cadAlunos[0].altura} cm\n Email: {cadAlunos[0].email} \n IMC: {cadAlunos[0].imc:.2f}")
+                  print(" Status:", "Ativo" if cadAlunos[i].status == True else "Inativo")
+                  print()
+                  print(f"Treino de {cadAlunos[i].nome}: ")
+                  for j in treinoAlunos[idAluno]:
+                      print(
+                          f"\n Nome do Exercício: {j.nomeExercicio}\n Número de Repetições: {j.numRepeticoes}\n Peso do Exercício: {j.pesoExercicio} kg")
+              else:
+                  print()
+                  print(f"The Pupil {search_by_name} does't have a registred workout!")
+          else:
+              print()
+              print(f"The Pupil {search_by_name} is not registred!")
+    else:
+        print()
+        print("Cadastre alunos primeiro!")
 
 # Atualiza os dados de um aluno a partir de seu Id.
 def atualizarDados(idAluno):
-    print("if you enter 0 will stay the same!")
+    if cadAlunos != []:
+      print("if you enter 0 will stay the same!")      
+      new_name = input(
+          f"The actual Name is: {cadAlunos[idAluno].nome}. What do you want to put?\n")
+      new_cpf = input(
+          f"The actual CPF is: {cadAlunos[idAluno].cpf}. What do you want to put?\n")
+      new_weight = input(
+          f"The actual Weight is: {cadAlunos[idAluno].peso}. What do you want to put?\n")
+      new_height = input(
+          f"The actual Height is: {cadAlunos[idAluno].altura}. What do you want to put?\n")
+      new_email = input(
+          f"The actual Email is: {cadAlunos[idAluno].email}. What do you want to put?\n")
 
-    new_name = input(
-        f"The actual Name is: {cadAlunos[idAluno].nome}. What do you want to put?\n")
-    new_cpf = input(
-        f"The actual CPF is: {cadAlunos[idAluno].cpf}. What do you want to put?\n")
-    new_weight = input(
-        f"The actual Weight is: {cadAlunos[idAluno].peso}. What do you want to put?\n")
-    new_height = input(
-        f"The actual Height is: {cadAlunos[idAluno].altura}. What do you want to put?\n")
+      if new_name != "0":
+          cadAlunos[idAluno].nome = new_name
 
-    if new_name != "0":
-        cadAlunos[idAluno].nome = new_name
+      if new_cpf != "0":
+          if (validateCPF(new_cpf) == True):
+              cadAlunos[idAluno].cpf = new_cpf
+          else:
+              print("CPF inválido!!")
 
-    if new_cpf != "0":
-        cadAlunos[idAluno].cpf = new_cpf
+      if new_weight != "0":
+          cadAlunos[idAluno].peso = new_weight
+          weight_change = True
 
-    if new_weight != "0":
-        cadAlunos[idAluno].peso = new_weight
+      if new_height != "0":
+          cadAlunos[idAluno].altura = new_height
+          height_change = True
 
-    if new_height != "0":
-        cadAlunos[idAluno].altura = new_height
+      if height_change == True or weight_change == True or height_change == True and weight_change == True:
+          cadAlunos[idAluno].imc = calculatingIMC(cadAlunos[idAluno].peso, cadAlunos[idAluno].altura)
+
+      if new_email != "0":
+          if validateEmail(new_email) == True:
+              cadAlunos[idAluno].email = new_email
+          else:
+              print("Email inválido!!")
+    else:
+        print()
+        print("Cadastre alunos primeiro!")
 
 # Exclui um aluno.
 def excluirAluno():
@@ -191,6 +237,7 @@ def excluirAluno():
     for i in cadAlunos:
         if name_delete_pupil == i.nome:
             verificador += 1
+            print()
             print(f"Aluno {i.nome} removido!")
             cadAlunos.remove(i)
     if verificador == 0:
@@ -199,28 +246,52 @@ def excluirAluno():
 
 # Exibe o relatório de todos os alunos.
 def relatorioAlunos():
+    verificador = 0
     report_view = input(
         "Choose what you want to view: \n 1. All Pupils \n 2. Just Active Pupils\n 3. Just Inactive Pupils\n"
     )
     match report_view:
         case "1":
-            for i in range(len(cadAlunos)):
+            if cadAlunos != []:
+              for i in range(len(cadAlunos)):
+                  print()
+                  print("Pupil Data: ")
+                  print(f" Nome: {cadAlunos[0].nome} \n CPF: {cadAlunos[0].cpf} \n Peso: {cadAlunos[0].peso} kg \n Altura: {cadAlunos[0].altura} cm\n Email: {cadAlunos[0].email} \n IMC: {cadAlunos[0].imc:.2f}")
+                  print(" Status:", "Ativo" if cadAlunos[i].status == True else "Inativo")
+            else:
                 print()
-                print("Pupil Data: ")
-                print(f" Nome: {cadAlunos[i].nome}\n CPF: {cadAlunos[i].cpf}\n Peso: {cadAlunos[i].peso} kg\n Altura: {cadAlunos[i].altura} cm")
-                print(" Status:", "Ativo" if cadAlunos[i].status == True else "Inativo")
+                print("Cadastre alunos primeiro!")
         case "2":
-            for i in range(len(cadAlunos)):
-                if cadAlunos[i].status == True:
-                    print()
-                    print("Active Pupil Data: ")
-                    print(f" Nome: {cadAlunos[i].nome}\n CPF: {cadAlunos[i].cpf}\n Peso: {cadAlunos[i].peso} kg\n Altura: {cadAlunos[i].altura} cm\n")
+            if cadAlunos != []:
+              for i in range(len(cadAlunos)):
+                  if cadAlunos[i].status == True:
+                      print()
+                      print("Active Pupil Data: ")
+                      print(f" Nome: {cadAlunos[0].nome} \n CPF: {cadAlunos[0].cpf} \n Peso: {cadAlunos[0].peso} kg \n Altura: {cadAlunos[0].altura} cm\n Email: {cadAlunos[0].email} \n IMC: {cadAlunos[0].imc:.2f}")
+                      verificador+=1
+              if verificador == 0:
+                  print()
+                  print("Nenhum aluno está ativo na academia!")
+            else:
+                print()
+                print("Cadastre alunos primeiro!")
         case "3":
-            for i in range(len(cadAlunos)):
-                if cadAlunos[i].status == False:
-                    print()
-                    print("Inative Pupil Data: ")
-                    print(f" Nome: {cadAlunos[i].nome}\n CPF: {cadAlunos[i].cpf}\n Peso: {cadAlunos[i].peso} kg\n Altura: {cadAlunos[i].altura} cm\n")
+            if cadAlunos != []:
+              for i in range(len(cadAlunos)):
+                  if cadAlunos[i].status == False:
+                      print()
+                      print("Inative Pupil Data: ")
+                      print(f" Nome: {cadAlunos[0].nome} \n CPF: {cadAlunos[0].cpf} \n Peso: {cadAlunos[0].peso} kg \n Altura: {cadAlunos[0].altura} cm\n Email: {cadAlunos[0].email} \n IMC: {cadAlunos[0].imc:.2f}")
+              if verificador == 0:
+                  print()
+                  print("Todos os alunos estão ativos na academia!")
+            else:
+                print()
+                print("Cadastre alunos primeiro!")
+        case _:
+            print()
+            print("Digite um número válido!")
+            
 
 # Verifica se o cpf é válido.
 def validateCPF(cpf):
@@ -228,9 +299,7 @@ def validateCPF(cpf):
     sum_of_multiplication = []
     result_of_multiplication = []
     verifications_digits = []
-
     rearranging_cpf = list(cpf)
-
 
     for j in rearranging_cpf:
         if j == '.' or j == '-':
@@ -240,7 +309,6 @@ def validateCPF(cpf):
 
     rearranging_cpf.pop(-1)
     rearranging_cpf.pop(-1)
-
     elements_to_multiplicate = range(10,1,-1) 
 
     def multiplePerDigit(rearranging_cpf, elements_to_multiplicate):
@@ -249,7 +317,6 @@ def validateCPF(cpf):
             result_of_multiplication.append(result)
 
     multiplePerDigit(rearranging_cpf, elements_to_multiplicate)
-
     sum_of_multiplication = sum(result_of_multiplication)
 
     def calculateVerificationDigits(sum):
@@ -264,15 +331,12 @@ def validateCPF(cpf):
     calculateVerificationDigits(sum_of_multiplication)
     elements_to_multiplicate = [*range(11,1,-1)]
     rearranging_cpf.append(verifications_digits[0])
-
     result_of_multiplication.clear()
 
     multiplePerDigit(rearranging_cpf, elements_to_multiplicate)
-
     sum_of_multiplication = sum(result_of_multiplication)
 
     calculateVerificationDigits(sum_of_multiplication)
-
     rearranging_cpf.append(verifications_digits[1])
 
     def finalCheck(realCPF, rearranging_cpf):
@@ -329,7 +393,7 @@ def menuGerenciar():
             input(f"Qual operação deseja realizar? \n 1. Incluir um novo exercício no treino de {aluno1}. \n 2. Alterar um exercício existente no treino de {aluno1}. \n 3. Excluir um exercício do treino de {aluno1}. \n 4. Excluir todos os exercícios do treino de {aluno1}. \n"))
         if menuGerenciar == 1:
             print()
-            recebeExercicio(idAluno)
+            recebeExercicio(idAluno, aluno1)
 
         elif menuGerenciar == 2:
             print()
@@ -350,33 +414,33 @@ def menuGerenciar():
             if certeza == 1:
                 excluirTodosExercicios(idAluno)
             elif certeza == 2:
+                print()
                 print(f"Os exercícios de {aluno1} não foram excluídos!")
             else:
+                print()
                 print("Por favor, digite um número válido.")
         else:
+            print()
             print("Por favor digite um número válido.")
     else:
+        print()
         print("Aluno não encontrado.")
 
-# def calculatingIMC(peso, altura):
-#     IMC = peso / (altura * altura)
-#     return print(f"O índice de massa corporal é: {IMC:.2f}")
+def calculatingIMC(peso, altura):
+    if altura > 2.2:
+        altura = altura / 100
+    IMC = peso / (altura * altura)
+    rounded_imc = round(IMC)
+    return rounded_imc
 
+import re
 
-# peso = 68.0
-# altura = 1.80
-# calculatingIMC(peso, altura)
-
-# import re
-
-
-# def validateEmail(email):
-#     r = re.compile(r"^[\w-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$")
-#     if r.match(email):
-#         return print(f"O email: {email} é válido!!")
-#     else:
-#         return print(f"O email informado não é válido!!")
-
+def validateEmail(email):
+    r = re.compile(r"^[\w-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$")
+    if r.match(email):
+        return True
+    else:
+        return False
 
 # main
 while True:
@@ -388,6 +452,7 @@ while True:
         else:
             break
 
-    except EOFError:
-        print("Por favor, insira alguma coisa.")
-        break
+    except ValueError:
+        print("Por favor Andressa, insira alguma coisa!")
+        print()
+        continue
